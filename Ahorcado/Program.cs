@@ -4,11 +4,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 List<String> palabras = new List<string>();
-
 int vidas = 6;
-
 void Hangman()
 {
+    vidas = 6;
     MostrarCabecera();
     PrecargarPalabras();
     string aleatoria = SeleccionarPalabraAleatoria();
@@ -204,15 +203,53 @@ void AgregarPalabra()
     }
 }
 
+void JugarConPalabrasPersonalizadas()
+{
+    if (palabras.Count == 0)
+    {
+        Console.WriteLine("No hay palabras personalizadas disponibles. Por favor, agregue palabras primero.");
+        return;
+    }
+    vidas = 6;
+    Console.Clear();
+    MostrarCabecera();
+    string aleatoria = SeleccionarPalabraAleatoriaPersonalizada();
+    Console.WriteLine($"VIDAS: {IntentosRestantes()}");
+    string censurada = OcultarPalabra(aleatoria);
+    DibujarLineas(censurada);
+    while (vidas > 0 && !HasGanado(aleatoria, ref censurada))
+    {
+        char letra = SolicitarLetra();
+        Console.Clear();
+        Console.WriteLine("--------------------");
+        ReemplazarLineas(aleatoria, ref censurada, letra);
+        Console.WriteLine("--------------------");
+        Console.WriteLine($"VIDAS: {IntentosRestantes()}");
+        Console.WriteLine("--------------------");
+    }
+    if (vidas == 0)
+    {
+        Console.WriteLine("HAS PERDIDO");
+    }
+}
+
+string SeleccionarPalabraAleatoriaPersonalizada()
+{
+    Random rand = new Random();
+    string aleatoria = palabras[rand.Next(palabras.Count)];
+    return aleatoria;
+}
+
 void Menu()
 {
     bool salir = false;
 
     while (!salir)
     {
-        Console.WriteLine("1. Jugar");
-        Console.WriteLine("2. Agregar palabra");
-        Console.WriteLine("3. Salir");
+        Console.WriteLine("1. Jugar con palabras predefinidas");
+        Console.WriteLine("2. Jugar con palabras personalizadas");
+        Console.WriteLine("3. Agregar palabra personalizada");
+        Console.WriteLine("4. Salir");
         Console.Write("Seleccione una opción: ");
 
         string opcion = Console.ReadLine();
@@ -225,9 +262,13 @@ void Menu()
                 break;
             case "2":
                 Console.Clear();
-                AgregarPalabra();
+                JugarConPalabrasPersonalizadas();
                 break;
             case "3":
+                Console.Clear();
+                AgregarPalabra();
+                break;
+            case "4":
                 salir = true;
                 break;
             default:
@@ -237,3 +278,4 @@ void Menu()
     }
 }
 Menu();
+
