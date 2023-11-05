@@ -188,4 +188,52 @@ bool HasGanado(string palabraOriginal, ref string palabraOculta)
         return false;
     }
 }
-Hangman();
+void AgregarPalabra()
+{
+    Console.WriteLine("Escriba la palabra que desea agregar a la lista:");
+    string nuevaPalabra = Console.ReadLine();
+
+    if (!string.IsNullOrEmpty(nuevaPalabra))
+    {
+        palabras.Add(nuevaPalabra);
+        Console.WriteLine($"'{nuevaPalabra}' ha sido agregada a la lista de palabras.");
+    }
+    else
+    {
+        Console.WriteLine("La palabra no puede estar vacía. Intente de nuevo.");
+    }
+}
+
+void Menu()
+{
+    bool salir = false;
+
+    while (!salir)
+    {
+        Console.WriteLine("1. Jugar");
+        Console.WriteLine("2. Agregar palabra");
+        Console.WriteLine("3. Salir");
+        Console.Write("Seleccione una opción: ");
+
+        string opcion = Console.ReadLine();
+
+        switch (opcion)
+        {
+            case "1":
+                Console.Clear();
+                Hangman();
+                break;
+            case "2":
+                Console.Clear();
+                AgregarPalabra();
+                break;
+            case "3":
+                salir = true;
+                break;
+            default:
+                Console.WriteLine("Opción no válida. Intente de nuevo.");
+                break;
+        }
+    }
+}
+Menu();
