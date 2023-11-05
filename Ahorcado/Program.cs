@@ -12,11 +12,23 @@ void Hangman()
     MostrarCabecera();
     PrecargarPalabras();
     string aleatoria = SeleccionarPalabraAleatoria();
-    Console.WriteLine(aleatoria);
+    Console.WriteLine($"VIDAS: {IntentosRestantes()}");
     string censurada = OcultarPalabra(aleatoria);
     DibujarLineas(censurada);
-    char letra = SolicitarLetra();
-    ComprobarLetra(aleatoria, letra);
+    while (vidas > 0 && !HasGanado(aleatoria, ref censurada))
+    {
+        char letra = SolicitarLetra();
+        Console.Clear();
+        Console.WriteLine("--------------------");
+        ReemplazarLineas(aleatoria, ref censurada, letra);
+        Console.WriteLine("--------------------");
+        Console.WriteLine($"VIDAS: {IntentosRestantes()}");
+        Console.WriteLine("--------------------");
+    }
+    if (vidas == 0)
+    {
+        Console.WriteLine("HAS PERDIDO");
+    }
 }
 
 
@@ -26,7 +38,7 @@ void MostrarCabecera()
     Console.WriteLine("|  +---+    -----------------         |");
     Console.WriteLine("|  |   |    JUEGO:AHORCADO            |");
     Console.WriteLine("|      |    LENGUAJE:C#               |");
-    Console.WriteLine("|      |    AUTOR: ALEJANDRO R.C.     |");
+    Console.WriteLine("|      |    AUTOR: Alejandro Rivero   |");
     Console.WriteLine("|      |    -----------------         |");
     Console.WriteLine("|      |   PROGRAMACIÓN Y MOTORES     |");
     Console.WriteLine("+-------------------------------------+");
@@ -36,7 +48,6 @@ void MostrarCabecera()
     Console.WriteLine("--------------------");
     Console.WriteLine("Adivina la palabra");
     Console.WriteLine("--------------------");
-    Console.WriteLine("PALABRA");
 
 
 };
@@ -53,6 +64,17 @@ void PrecargarPalabras() {
     palabras.Add("Butano");
     palabras.Add("Solar");
 };
+string[] ahorcado = {
+    "  ________\n |       |\n |       O\n |      /|\\ \n |      / \\ \n |       \n |",
+    "  ________\n |       |\n |       O\n |      /|\\ \n |      /  \n |       \n |",
+    "  ________\n |       |\n |       O\n |      /|\\ \n |       \n |       \n |",
+    "  ________\n |       |\n |       O\n |      /| \n |       \n |       \n |",
+    "  ________\n |       |\n |       O\n |       | \n |       \n |       \n |",
+    "  ________\n |       |\n |       O\n |       \n |       \n |       \n |",
+    "  ________\n |       |\n |       \n |       \n |       \n |       \n |",
+};
+
+
 
 String SeleccionarPalabraAleatoria()
 {
@@ -111,13 +133,11 @@ bool ComprobarLetra(string palabra, char letra)
 
     if (palabra.ToLower().Contains(letra))
         {
-            Console.WriteLine("Velda");
             return true;
             
         }
         else
         {
-            Console.WriteLine("Mentira");
             return false;
         }
 }
@@ -130,16 +150,42 @@ void DecrementarVidas()
 
 
 
-//13
-//int longitudPalabra = palabra.Length;
-//for (int i = 0; i < longitudPalabra; i++)
-//{
-//    if (palabraOriginal[i] == letraIntroducida)
-//    {
-//        StringBuilder guion = new StringBuilder(palabraOculta);
-//        guion[i] = letraIntroducida;
-//        palabraOculta = guion.ToString();
-//    }
+void ReemplazarLineas(string palabraOriginal, ref string palabraOculta, char letraIntroducida)
+{
+    letraIntroducida = Char.ToLower(letraIntroducida);
+    string diferencia = palabraOculta;
 
-//}
+    StringBuilder nuevaPalabraOculta = new StringBuilder(palabraOculta);
+
+    for (int i = 0; i < palabraOriginal.Length; i++)
+    {
+        if (Char.ToLower(palabraOriginal[i]) == letraIntroducida) 
+        {
+            nuevaPalabraOculta[i] = palabraOriginal[i];
+        }
+    }
+    palabraOculta = nuevaPalabraOculta.ToString();
+    if (diferencia == palabraOculta)
+    {
+        DecrementarVidas();
+    }
+    if (vidas >= 0 && vidas < ahorcado.Length)
+    {
+        Console.WriteLine(ahorcado[vidas]);
+    }
+    DibujarLineas(palabraOculta);
+}
+
+bool HasGanado(string palabraOriginal, ref string palabraOculta)
+{
+    if(palabraOriginal == palabraOculta)
+    {
+        Console.WriteLine("!HAS GANADO¡");
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 Hangman();
